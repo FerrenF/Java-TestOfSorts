@@ -5,7 +5,6 @@ import java.util.random.RandomGenerator;
 
 import com.github.javafaker.Faker;
 public class SortTest {
-
 	
 	public static <T> T[] shuffle(T[] in){
 		for(int i = 0; i < in.length;i++) {
@@ -29,18 +28,21 @@ public class SortTest {
 		
 		var newList = testList.clone();
 		SortClass<Person> p = new SortClass<Person>(newList);
-		p.sortListMerge();
+		p.recursiveSortListInsertion();
 		for(int i = 0;i < newList.length;i++) {
 			System.out.println(newList[i].toString());
 		}
-		System.out.println( String.format("Iterations: %d \nManipulations: %d \nComparisons: %d \nTime: %d ms",p.getIterationCounter(),p.getManipulationCounter(),p.getComparisonCounter(),p.getSortTime() / 1000000));
+		System.out.println( String.format("Iterations: %d \nManipulations: %d \nComparisons: %d \nTime: %.2f ms",p.getIterationCounter(),p.getManipulationCounter(),p.getComparisonCounter(),p.getSortTime()));
 		
-		int ranInt = new Random().nextInt(0, testList.length);
-		Person randomElement = testList[ranInt];
+		
+		
+		//Let's pick an element and try some searching
+		int ranInt = new Random().nextInt(0, newList.length);
+		Person randomElement = newList[ranInt];
 		System.out.println("Got element "+ranInt+": "+randomElement.toString()+" - " +"searching...");
 		
-		//int bSearch = new BinarySearch<Person>().search(testList, randomElement);
-	//	System.out.println("Search Result: " + bSearch);
+		int bSearch = new BinarySearch<Person>().search(newList, randomElement);
+		System.out.println("Search Result: " + bSearch);
 	}
 
 }

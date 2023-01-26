@@ -17,11 +17,14 @@ public class SortClass<T> {
 	}
 	public int getManipulationCounter() {
 		return manipulationCounter;
-	}
+	}	
 	
+	//Returns a decimal value in ms
 	private long sortTimeStart,sortTimeEnd;
-	public long getSortTime() {
-		return sortTimeEnd - sortTimeStart;
+	public double getSortTime() {
+		
+		//Ns -> ms
+		return (sortTimeEnd - sortTimeStart) / 1000000.0;
 	}
 		
 	private T[] sortList;
@@ -90,12 +93,33 @@ public class SortClass<T> {
 	//Insertion sort method 2 (Recursive). 
 	//Two nested loops means a worst case scenario of n * n iterations through these loops or big O(n^2)
 	public void recursiveSortListInsertion() {
-		resetStats();
-			T[] buffer = this.getList();
-			
-			
+		resetStats();	
+		sortTimeStart = System.nanoTime();
+		recursiveSortListInsertionA(1,this.getList().length);
+		sortTimeEnd = System.nanoTime();
 		}
-	
+	private void recursiveSortListInsertionA(int l, int r) {
+		
+			iterationCounter++;	
+			T[] buffer = this.getList();
+			if(l < r)
+			{				
+					T temp = buffer[l];			
+					int j = l-1;
+					// the first logical check will ensure the second does not run into a buffer overflow on the first element.
+					while((j >= 0) && (comparison(temp,buffer[j])<0)) {
+						// sorted elements <- unsorted elements 
+						// we are moving backwards into an already sorted list when we find our insertion point for the held element
+						buffer[j+1] = buffer[j];
+						j--;
+						iterationCounter++;	
+						manipulationCounter++;
+					}
+					buffer[j+1]=temp;
+					manipulationCounter++;
+				recursiveSortListInsertionA(l+1,r);
+			}			
+		}
 	
 	
 	
@@ -120,18 +144,6 @@ public class SortClass<T> {
 			}
 		}
 		sortTimeEnd = System.nanoTime();
-	}
-	
-	private <T> T[] concatenate(T[] a, T[] b) {
-	    int aLen = a.length;
-	    int bLen = b.length;
-
-	    @SuppressWarnings("unchecked")
-	    T[] c = (T[]) Array.newInstance(a.getClass().getComponentType(), aLen + bLen);
-	    System.arraycopy(a, 0, c, 0, aLen);
-	    System.arraycopy(b, 0, c, aLen, bLen);
-
-	    return c;
 	}
 	
 	@SuppressWarnings("unchecked")

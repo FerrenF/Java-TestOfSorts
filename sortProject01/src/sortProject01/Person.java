@@ -3,7 +3,6 @@ package sortProject01;
 import java.util.concurrent.TimeUnit;
 import com.github.javafaker.Faker;
 
-
 //So this class is a generic model for the type of data we are going to use to test our search methods.
 public class Person implements Comparable<Person>{
 	String first_name;
