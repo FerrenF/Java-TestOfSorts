@@ -4,17 +4,27 @@ Hi there. This is a playground for myself to test some sort algorithms and data 
 
 
 Data Generation:
-  //TODO
+
+     //TODO
   
 Sort Class Usage:
 
-SortClass<ObjectType> var = new SortClass<>(yourList);
-var.sortListMerge();
-var.sortListInsertion();
-var.sortListBubble();
+    SortClass<ObjectType> var = new SortClass<>(yourList);
 
-Offers statistic tracking:
-var.getIterationCounter();
-var.getManipulationCounter();
-var.getComparisonCounter();
-var.getSortTime();
+    var.sortListMerge();
+
+    var.sortListInsertion();
+
+    var.sortListBubble();
+
+
+    Offers statistic tracking:
+
+    var.getIterationCounter();
+
+    var.getManipulationCounter();
+
+    var.getComparisonCounter();
+
+    var.getSortTime();
+
