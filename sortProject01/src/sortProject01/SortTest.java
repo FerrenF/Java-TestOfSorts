@@ -15,6 +15,7 @@ public class SortTest {
 		}
 		return in;
 	}
+	
 	SortClass testSortObject;
 	public static void main(String[] args) {
 		

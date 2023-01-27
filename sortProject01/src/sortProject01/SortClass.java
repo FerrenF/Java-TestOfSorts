@@ -4,7 +4,7 @@ import java.lang.reflect.Array;
 
 public class SortClass<T> {
 
-
+	private long sortTimeStart,sortTimeEnd;
 	private int iterationCounter = 0;
 	private int comparisonCounter = 0;
 	private int manipulationCounter = 0;
@@ -18,17 +18,12 @@ public class SortClass<T> {
 	public int getManipulationCounter() {
 		return manipulationCounter;
 	}	
-	
-	//Returns a decimal value in ms
-	private long sortTimeStart,sortTimeEnd;
 	public double getSortTime() {
-		
-		//Ns -> ms
+		//Returns a decimal value in miliseconds, converted from nanoseconds
 		return (sortTimeEnd - sortTimeStart) / 1000000.0;
 	}
 		
 	private T[] sortList;
-	private boolean reverse_order = false;
 	private boolean is_comparable = false;
 	private ComparableMethod<T> compareFunction = null;
 	public T[] getList() {		
