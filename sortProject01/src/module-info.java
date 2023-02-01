@@ -5,5 +5,5 @@ module sortProject01 {
 	requires javafx.controls;
 	requires javafx.graphics;
 	
-	 opens sortProject01 to javafx.graphics;
+	 opens sortApp01 to javafx.graphics;
 }
