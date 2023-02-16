@@ -29,7 +29,7 @@ public class SortTest {
 		
 		var newList = testList.clone();
 		SortClass<Person> p = new SortClass<Person>(newList);
-		p.recursiveSortListInsertion();
+		p.sortListQuick();
 		for(int i = 0;i < newList.length;i++) {
 			System.out.println(newList[i].toString());
 		}
