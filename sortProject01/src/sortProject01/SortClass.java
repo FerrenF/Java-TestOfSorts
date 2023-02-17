@@ -149,24 +149,24 @@ public class SortClass<T> {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private T[] merge(T[] buffer, int l, int m, int r) {
-        int n1 = m - l + 1;
-        int n2 = r - m;
+	private T[] merge(T[] buffer, int left, int mid, int right) {
+        int n1 = mid - left + 1;
+        int n2 = right - mid;
 
         T[] L = (T[]) Array.newInstance(buffer.getClass().getComponentType(),n1);
         T[] R = (T[]) Array.newInstance(buffer.getClass().getComponentType(),n2);
 
         for (int i = 0; i < n1; ++i)
-            L[i] = buffer[l + i];
+            L[i] = buffer[left + i];
         	manipulationCounter++;
         	iterationCounter++;
         for (int j = 0; j < n2; ++j)
-            R[j] = buffer[m + 1 + j];
+            R[j] = buffer[mid + 1 + j];
         	manipulationCounter++;
         	iterationCounter++;
         int i = 0, j = 0;
         
-        int k = l;
+        int k = left;
         while (i < n1 && j < n2) {
             if (comparison(L[i],R[j]) <= 0) {
                 buffer[k] = L[i];
