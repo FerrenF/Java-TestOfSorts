@@ -1,6 +1,6 @@
 # Java-TestOfSorts
 
-Hi there. This is a playground for myself to test some sort algorithms and data generation procedures.
+Hi there. This is a playground for myself to test some sort algorithms and test data generation.
 
 
 Data Generation:
