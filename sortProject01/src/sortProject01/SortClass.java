@@ -58,6 +58,13 @@ public class SortClass<T> {
 				: ( compareFunction.compareTo(testA, testB));
 	}
 	
+	public void swap(int source, int target) {
+		T[] data = this.getList();
+		T ele = data[target];
+		data[target] = data[source];
+		data[target] = ele;
+		manipulationCounter++;
+	}
 
 	//Insertion sort method 1 (Iterative). 
 	//Two nested loops means a worst case scenario of n * n iterations through these loops or big O(n^2)
@@ -206,6 +213,38 @@ public class SortClass<T> {
 		sortTimeStart = System.nanoTime();
 		sortListMergeA(this.getList(),0,this.getList().length-1);
 		sortTimeEnd = System.nanoTime();
+		
+	}
+	
+	public void sortListQuick() {
+		sortListQuickX(0, this.getList().length - 1);
+	}
+	public void sortListQuickX(int l, int r) {
+		if(l < r)
+		{
+			int pi = quickSortPartition(l,r);
+			sortListQuickX(l,pi-1);
+			sortListQuickX(pi+1,r);
+			iterationCounter+=2;
+		}
+	}
+	private int quickSortPartition(int l, int r) {
+		T[] buffer = this.getList();
+		
+		//TODO: improve this
+		T pivot = buffer[r]; 
+		
+		int i = l - 1;
+		for(int j = l; j <= r - 1; j++) {
+			if(comparison(buffer[j],pivot) < 0) {
+				i++;
+				this.swap(i,j);
+			}
+			iterationCounter++;
+		}
+		i++;
+		this.swap(i,r);
+		return i;
 		
 	}
 
