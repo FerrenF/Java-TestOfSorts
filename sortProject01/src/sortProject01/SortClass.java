@@ -62,8 +62,8 @@ public class SortClass<T> {
 		T[] data = this.getList();
 		T ele = data[target];
 		data[target] = data[source];
-		data[target] = ele;
-		manipulationCounter++;
+		data[source] = ele;
+		manipulationCounter+=2;
 	}
 
 	//Insertion sort method 1 (Iterative). 
@@ -138,10 +138,9 @@ public class SortClass<T> {
 				if((comparison(buffer[j+1],temp)<0)) {
 					// unsorted elements -> sorted elements 
 					// we are moving forwards into an already sorted list when we find our insertion point for the held element
-					buffer[j] = buffer[j+1];	
-					buffer[j+1] = temp;
+					
+					swap(j+1,j);					
 					iterationCounter++;	
-					manipulationCounter+=2;
 				}
 			}
 		}
@@ -217,7 +216,9 @@ public class SortClass<T> {
 	}
 	
 	public void sortListQuick() {
+		sortTimeStart = System.nanoTime();
 		sortListQuickX(0, this.getList().length - 1);
+		sortTimeEnd = System.nanoTime();
 	}
 	public void sortListQuickX(int l, int r) {
 		if(l < r)
