@@ -3,7 +3,19 @@ package sortProject01;
 import java.lang.reflect.Array;
 
 public class SortClass<T> {
+	
+	public enum SortType { MERGE_SORT, QUICK_SORT, BUBBLE_SORT, INSERTION_SORT, NONE };
+	private SortType lastSortType;
 
+	public SortType getSortType() {
+		return this.lastSortType;
+	}
+	
+	private void setSortType(SortType t) {
+		this.lastSortType = t;
+	}
+
+	
 	private long sortTimeStart,sortTimeEnd;
 	private int iterationCounter = 0;
 	private int comparisonCounter = 0;
@@ -52,7 +64,7 @@ public class SortClass<T> {
 	//It also centralizes the location of comparison tracking.
 		@SuppressWarnings("unchecked")
 	private int comparison(T testA, T testB) {
-			comparisonCounter++;
+		comparisonCounter++;
 		return is_comparable
 				? ( ((Comparable<T>)testA).compareTo(testB) )
 				: ( compareFunction.compareTo(testA, testB));
@@ -148,19 +160,19 @@ public class SortClass<T> {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private T[] merge(T[] buffer, int left, int mid, int right) {
+	private T[] merge(T[] input, int left, int mid, int right) {
         int n1 = mid - left + 1;
         int n2 = right - mid;
 
-        T[] L = (T[]) Array.newInstance(buffer.getClass().getComponentType(),n1);
-        T[] R = (T[]) Array.newInstance(buffer.getClass().getComponentType(),n2);
+        T[] L = (T[]) Array.newInstance(input.getClass().getComponentType(),n1);
+        T[] R = (T[]) Array.newInstance(input.getClass().getComponentType(),n2);
 
         for (int i = 0; i < n1; ++i)
-            L[i] = buffer[left + i];
+            L[i] = input[left + i];
         	manipulationCounter++;
         	iterationCounter++;
         for (int j = 0; j < n2; ++j)
-            R[j] = buffer[mid + 1 + j];
+            R[j] = input[mid + 1 + j];
         	manipulationCounter++;
         	iterationCounter++;
         int i = 0, j = 0;
@@ -168,11 +180,11 @@ public class SortClass<T> {
         int k = left;
         while (i < n1 && j < n2) {
             if (comparison(L[i],R[j]) <= 0) {
-                buffer[k] = L[i];
+                input[k] = L[i];
                 i++;
             }
             else {
-            	buffer[k] = R[j];
+            	input[k] = R[j];
                 j++;
             }
             k++;
@@ -181,41 +193,48 @@ public class SortClass<T> {
         }
         
         while (i < n1) {
-        	buffer[k] = L[i];
+        	input[k] = L[i];
             i++;
             k++;
+            
             manipulationCounter++;
         	iterationCounter++;
+        	if(j < n2) {
+        		
+        	}
         }
 
         while (j < n2) {
-        	buffer[k] = R[j];
+        	input[k] = R[j];
             j++;
             k++;
             manipulationCounter++;
         	iterationCounter++;
         }
         
-		return buffer;
+		return input;
 	}
 
 	
-	private void sortListMergeA(T[] input, int l, int r) {
+	private void sortListMergeA(int l, int r) {
+		T[] input = this.getList();
 		if(l < r) {
 			int mid = l + (r - l) / 2;
-			sortListMergeA(input, l, mid);
-			sortListMergeA(input, mid+1, r);				
+			sortListMergeA(l, mid);
+			sortListMergeA(mid+1, r);				
 			merge(input, l, mid, r);
 		}
 	}
 	public void sortListMerge() {
+		setSortType(SortType.MERGE_SORT);
 		sortTimeStart = System.nanoTime();
-		sortListMergeA(this.getList(),0,this.getList().length-1);
+		sortListMergeA(0,this.getList().length-1);
 		sortTimeEnd = System.nanoTime();
 		
 	}
 	
 	public void sortListQuick() {
+		setSortType(SortType.QUICK_SORT);
 		sortTimeStart = System.nanoTime();
 		sortListQuickX(0, this.getList().length - 1);
 		sortTimeEnd = System.nanoTime();
@@ -233,7 +252,8 @@ public class SortClass<T> {
 		T[] buffer = this.getList();
 		
 		//TODO: improve this
-		T pivot = buffer[r]; 
+		int pp = r;
+		T pivot = buffer[pp]; 
 		
 		int i = l - 1;
 		for(int j = l; j <= r - 1; j++) {
