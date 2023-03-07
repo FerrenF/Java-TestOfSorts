@@ -1,8 +1,26 @@
 package sortProject01;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Array;
 
+
+
+class ST_Analytics{
+	public double time;
+	public int iterations;
+	public int comparisons;
+	public int movements;
+	public SortClass.SortType type;
+	public ST_Analytics(double time, int iterations, int comparisons, int movements, SortClass.SortType type) {
+		this.time = time; this.iterations = iterations; this.comparisons = comparisons; this.movements = movements; this.type = type;
+	}
+}
+
 public class SortClass<T> {
+	
+	 private PropertyChangeSupport changes = new PropertyChangeSupport(this);
+//	public class SortClassListener implements PropertyChan
 	
 	public enum SortType { MERGE_SORT, QUICK_SORT, BUBBLE_SORT, INSERTION_SORT, NONE };
 	private SortType lastSortType;
@@ -11,12 +29,9 @@ public class SortClass<T> {
 		return this.lastSortType;
 	}
 	
-	private void setSortType(SortType t) {
-		this.lastSortType = t;
-	}
 
-	
 	private long sortTimeStart,sortTimeEnd;
+	private int sortCounter = 0;
 	private int iterationCounter = 0;
 	private int comparisonCounter = 0;
 	private int manipulationCounter = 0;
@@ -35,6 +50,12 @@ public class SortClass<T> {
 		return (sortTimeEnd - sortTimeStart) / 1000000.0;
 	}
 		
+    public ST_Analytics getAnalytics() {
+    	return new ST_Analytics(getSortTime(), this.getIterationCounter(), this.getComparisonCounter(), this.getManipulationCounter(), this.getSortType());
+    }
+	
+	
+	// ------------------------------------------------
 	private T[] sortList;
 	private boolean is_comparable = false;
 	private ComparableMethod<T> compareFunction = null;
@@ -55,11 +76,7 @@ public class SortClass<T> {
 	}
 	
 
-	public void resetStats() {
-		iterationCounter = 0;
-	    comparisonCounter = 0;
-		manipulationCounter = 0;
-	}
+	
 	//This just cleans up our logic for running comparator functions to determine whether or not to swap two particular items.
 	//It also centralizes the location of comparison tracking.
 		@SuppressWarnings("unchecked")
@@ -77,13 +94,40 @@ public class SortClass<T> {
 		data[source] = ele;
 		manipulationCounter+=2;
 	}
+	
+	public void resetStats() {
+		iterationCounter = 0;
+	    comparisonCounter = 0;
+		manipulationCounter = 0;
+	}
+	public void sortBegin(SortType t) {
+		resetStats();	
+		this.lastSortType = t;
+		
+		long p = System.nanoTime();
+		changes.firePropertyChange("sortTimeStart", sortTimeStart , p);
+		sortTimeStart = p;
 
+	}
+	public void sortEnd() {
+		sortCounter++;
+
+		long p = System.nanoTime();
+		changes.firePropertyChange("sortTimeEnd", sortTimeEnd , p);
+		sortTimeEnd = p;
+	}
+	public void addPropertyChangeListener(PropertyChangeListener l) {
+        changes.addPropertyChangeListener(l);
+    }
+
+    public void removePropertyChangeListener(PropertyChangeListener l) {
+        changes.removePropertyChangeListener(l);
+    }
 	//Insertion sort method 1 (Iterative). 
 	//Two nested loops means a worst case scenario of n * n iterations through these loops or big O(n^2)
 	
 	public void sortListInsertion() {
-		resetStats();
-		sortTimeStart = System.nanoTime();
+		sortBegin(SortType.INSERTION_SORT);
 		T[] buffer = this.getList();
 		int j = 0;
 		for(int i = 1; i < buffer.length; i++) {
@@ -101,16 +145,15 @@ public class SortClass<T> {
 			buffer[j+1]=temp;
 			manipulationCounter++;
 		}
-		sortTimeEnd = System.nanoTime();
+		sortEnd();
 	}
 	
 	//Insertion sort method 2 (Recursive). 
 	//Two nested loops means a worst case scenario of n * n iterations through these loops or big O(n^2)
 	public void recursiveSortListInsertion() {
-		resetStats();	
-		sortTimeStart = System.nanoTime();
+		sortBegin(SortType.INSERTION_SORT);
 		recursiveSortListInsertionA(1,this.getList().length);
-		sortTimeEnd = System.nanoTime();
+		sortEnd();
 		}
 	private void recursiveSortListInsertionA(int l, int r) {
 		
@@ -139,8 +182,7 @@ public class SortClass<T> {
 	
 	// Very similar in approach to insertion sort, we have bubble sort.
 	public void sortListBubble() {
-		resetStats();
-		sortTimeStart = System.nanoTime();
+		sortBegin(SortType.BUBBLE_SORT);
 		T[] buffer = this.getList();
 		int l = this.getList().length;
 		for(int i = 0; i < l - 1; i++) {	
@@ -156,7 +198,7 @@ public class SortClass<T> {
 				}
 			}
 		}
-		sortTimeEnd = System.nanoTime();
+		sortEnd();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -226,20 +268,18 @@ public class SortClass<T> {
 		}
 	}
 	public void sortListMerge() {
-		setSortType(SortType.MERGE_SORT);
-		sortTimeStart = System.nanoTime();
+		sortBegin(SortType.MERGE_SORT);
 		sortListMergeA(0,this.getList().length-1);
-		sortTimeEnd = System.nanoTime();
+		sortEnd();
 		
 	}
 	
 	public void sortListQuick() {
-		setSortType(SortType.QUICK_SORT);
-		sortTimeStart = System.nanoTime();
+		sortBegin(SortType.QUICK_SORT);
 		sortListQuickX(0, this.getList().length - 1);
-		sortTimeEnd = System.nanoTime();
+		sortEnd();
 	}
-	public void sortListQuickX(int l, int r) {
+	private void sortListQuickX(int l, int r) {
 		if(l < r)
 		{
 			int pi = quickSortPartition(l,r);
