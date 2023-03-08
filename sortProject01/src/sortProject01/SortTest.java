@@ -20,12 +20,9 @@ public class SortTest {
 	public static void main(String[] args) {
 		
 		int sz = 100;
-	/*	// Let's create our n length list of fake people.
+		// Let's create our n length list of fake people.
 		System.out.println("Generated a list of size " + sz);
 		Person[] testList = SortTest.shuffle(Person.createTestList(sz));
-		
-		
-		// Let's feed it into our SortClass and try some sorting!
 		
 		var newList = testList.clone();
 		SortClass<Person> p = new SortClass<Person>(newList);
@@ -35,15 +32,13 @@ public class SortTest {
 		}
 		System.out.println( String.format("Iterations: %d \nManipulations: %d \nComparisons: %d \nTime: %.2f ms",p.getIterationCounter(),p.getManipulationCounter(),p.getComparisonCounter(),p.getSortTime()));
 		
-		
-		
 		//Let's pick an element and try some searching
 		int ranInt = new Random().nextInt(0, newList.length);
 		Person randomElement = newList[ranInt];
 		System.out.println("Got element "+ranInt+": "+randomElement.toString()+" - " +"searching...");
 		
 		int bSearch = new BinarySearch<Person>().search(newList, randomElement);
-		System.out.println("Search Result: " + bSearch);*/
+		System.out.println("Search Result: " + bSearch);
 	}
 
 }

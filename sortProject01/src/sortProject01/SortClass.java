@@ -22,7 +22,7 @@ public class SortClass<T> {
 	 private PropertyChangeSupport changes = new PropertyChangeSupport(this);
 //	public class SortClassListener implements PropertyChan
 	
-	public enum SortType { MERGE_SORT, QUICK_SORT, BUBBLE_SORT, INSERTION_SORT, NONE };
+	public enum SortType { MERGE_SORT, QUICK_SORT, BUBBLE_SORT, INSERTION_SORT };
 	private SortType lastSortType;
 
 	public SortType getSortType() {
