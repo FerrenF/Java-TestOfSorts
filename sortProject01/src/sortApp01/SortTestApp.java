@@ -33,8 +33,9 @@ class STAPanel_Analytics extends HBox{
 	private VBox analyticsSortBox;
 	private VBox analyticsSimpleBox;
 	private VBox analyticsGraphBox;
+	ChoiceBox<String> sortTypeSelector;
 	private Label an_Time, an_Iterations, an_Comparisons, an_Movements;
-	
+	Button analyticsStartSort;
 	public Label STAPanel_Analytic_setTime(double d) {
 		if(an_Time==null) an_Time = new Label("Time: "+String.valueOf(d));
 		an_Time.textProperty().set("Time: "+String.valueOf(d));
@@ -55,6 +56,9 @@ class STAPanel_Analytics extends HBox{
 		an_Movements.textProperty().set("Movements: "+String.valueOf(d));
 		return an_Movements;
 	}
+	public SortClass.SortType getSelectedType(){
+		return SortClass.SortType.valueOf(sortTypeSelector.getSelectionModel().getSelectedItem());
+	}
 	public STAPanel_Analytics() {
 		
 		
@@ -68,17 +72,22 @@ class STAPanel_Analytics extends HBox{
 		var l3 = STAPanel_Analytic_setComparisons(0);
 		var l4 = STAPanel_Analytic_setMovements(0);
 		
+		analyticsSortBox.setPadding(new Insets(0,5,0,5));
 		analyticsSimpleBox.getChildren().addAll(l1,l2,l3,l4);
 		
 		
-		ChoiceBox<String> sortTypeSelector = new ChoiceBox<String>();
+		sortTypeSelector = new ChoiceBox<String>();
 		ObservableList<String> a = FXCollections.observableArrayList();
 		for(var v : SortClass.SortType.values()) {
-			a.add(v.name());
+			a.add(v.name());			
 		}
 		sortTypeSelector.itemsProperty().set(a);
+		sortTypeSelector.getSelectionModel().selectFirst();
 		
-		analyticsSortBox.getChildren().add(sortTypeSelector);
+		analyticsStartSort = new Button("Sort");
+		analyticsStartSort.prefWidthProperty().bind(sortTypeSelector.widthProperty());
+		
+		analyticsSortBox.getChildren().addAll(sortTypeSelector,analyticsStartSort);
 		
 		this.getChildren().addAll(analyticsSortBox, analyticsSimpleBox, analyticsGraphBox);
 	}
@@ -175,17 +184,22 @@ public class SortTestApp extends Application {
 	    }
 	    
 	}
+	interface sortCallback {
+	    void callback(Person[] result, sortProject01.ST_Analytics data);
+	}
 	private class listSorter implements Runnable {
-		glCallback g;
+		sortCallback g;
 		Person[] input;
 		SortClass.SortType type;
-	    public listSorter(Person[] input, SortClass.SortType type, glCallback g) {
+	    public listSorter(Person[] input, SortClass.SortType type, sortCallback g) {
 	    	this.input=input; this.g=g; this.type=type;
 	    }
 
 	    public void run() {
 	    		
-	    	g.callback(r);
+	    	SortClass<Person> sorter = new SortClass<Person>(input);
+	    	sorter.doSort(type);
+	    	g.callback(sorter.getList(), sorter.getAnalytics());
 	    }
 	    
 	}
@@ -217,6 +231,23 @@ public class SortTestApp extends Application {
 		ui_pg.gen_shuffleButton.setOnMouseClicked((e) -> {
 			shuffleList();
 		});
+		ui_anal.analyticsStartSort.setOnMouseClicked((e)->{
+			initiateSort();			
+		});
+	}
+	public void initiateSort() {
+		generatorThread = new Thread(new listSorter(currentData.toArray(new Person[1]), ui_anal.getSelectedType(), (r, d) -> {
+			getCurrentData().setAll(r);
+			updateTable();
+			updateAnalytics(d);
+			}));
+		generatorThread.run();
+	}
+	public void updateAnalytics(sortProject01.ST_Analytics data) {
+		ui_anal.STAPanel_Analytic_setIterations(data.iterations);
+		ui_anal.STAPanel_Analytic_setTime(data.time);
+		ui_anal.STAPanel_Analytic_setMovements(data.movements);
+		ui_anal.STAPanel_Analytic_setComparisons(data.comparisons);
 	}
 	public void updateTable() {
 		ui_table.getTable().setItems(currentData);

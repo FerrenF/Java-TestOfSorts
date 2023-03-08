@@ -6,23 +6,12 @@ import java.lang.reflect.Array;
 
 
 
-class ST_Analytics{
-	public double time;
-	public int iterations;
-	public int comparisons;
-	public int movements;
-	public SortClass.SortType type;
-	public ST_Analytics(double time, int iterations, int comparisons, int movements, SortClass.SortType type) {
-		this.time = time; this.iterations = iterations; this.comparisons = comparisons; this.movements = movements; this.type = type;
-	}
-}
-
 public class SortClass<T> {
 	
 	 private PropertyChangeSupport changes = new PropertyChangeSupport(this);
 //	public class SortClassListener implements PropertyChan
 	
-	public enum SortType { MERGE_SORT, QUICK_SORT, BUBBLE_SORT, INSERTION_SORT };
+	public enum SortType { MERGE_SORT, QUICK_SORT, BUBBLE_SORT, INSERTION_SORT, REC_INSERTION_SORT };
 	private SortType lastSortType;
 
 	public SortType getSortType() {
@@ -100,7 +89,25 @@ public class SortClass<T> {
 	    comparisonCounter = 0;
 		manipulationCounter = 0;
 	}
-	public void sortBegin(SortType t) {
+	public void doSort(SortType t) {
+		switch(t) {
+			case INSERTION_SORT:
+				this.sortListInsertion();
+				break;
+			case BUBBLE_SORT:
+				this.sortListBubble();
+				break;
+			case MERGE_SORT:
+				this.sortListMerge();
+				break;
+			case QUICK_SORT:
+				this.sortListQuick();
+				break;
+			default:
+				this.sortListBubble();
+		}
+	}
+	private void sortBegin(SortType t) {
 		resetStats();	
 		this.lastSortType = t;
 		
@@ -109,7 +116,7 @@ public class SortClass<T> {
 		sortTimeStart = p;
 
 	}
-	public void sortEnd() {
+	private void sortEnd() {
 		sortCounter++;
 
 		long p = System.nanoTime();
@@ -188,10 +195,8 @@ public class SortClass<T> {
 		for(int i = 0; i < l - 1; i++) {	
 			for(int j=0; j < l - i  - 1;j++) {
 			T temp = buffer[j];		
-			//use our swap function to clean up the logic determining whether we swap or not. Note that in this one I did not pass the currently held item as the test
+			
 				if((comparison(buffer[j+1],temp)<0)) {
-					// unsorted elements -> sorted elements 
-					// we are moving forwards into an already sorted list when we find our insertion point for the held element
 					
 					swap(j+1,j);					
 					iterationCounter++;	
