@@ -1,11 +1,8 @@
 # Java-TestOfSorts
 
-Hi there. This is a playground for myself to test some sort algorithms and generate test data.
+Hi there. This is a playground.
 
-
-Data Generation:
-
-     //TODO
+![Screenshot](/screenshot.jpg?raw=true)
   
 Sort Class Usage:
 
