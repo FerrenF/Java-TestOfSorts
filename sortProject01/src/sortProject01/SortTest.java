@@ -24,18 +24,13 @@ public class SortTest {
 		System.out.println("Generated a list of size " + sz);
 		Person[] testList = SortTest.shuffle(Person.createTestList(sz));
 		
-		
-		// Let's feed it into our SortClass and try some sorting!
-		
 		var newList = testList.clone();
 		SortClass<Person> p = new SortClass<Person>(newList);
-		p.sortListQuick();
+		p.sortListMerge();
 		for(int i = 0;i < newList.length;i++) {
 			System.out.println(newList[i].toString());
 		}
 		System.out.println( String.format("Iterations: %d \nManipulations: %d \nComparisons: %d \nTime: %.2f ms",p.getIterationCounter(),p.getManipulationCounter(),p.getComparisonCounter(),p.getSortTime()));
-		
-		
 		
 		//Let's pick an element and try some searching
 		int ranInt = new Random().nextInt(0, newList.length);
